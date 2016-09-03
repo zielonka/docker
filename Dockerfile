@@ -10,7 +10,9 @@ RUN yum -y install openssh-server epel-release docker && \
     rm -f /etc/ssh/ssh_host_ecdsa_key /etc/ssh/ssh_host_rsa_key && \
     ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_ecdsa_key && \
     ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key && \
-    sed -i "s/#UsePrivilegeSeparation.*/UsePrivilegeSeparation no/g" /etc/ssh/sshd_config
+    sed -i "s/#UsePrivilegeSeparation.*/UsePrivilegeSeparation no/g" /etc/ssh/sshd_config && \
+    sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/g" /etc/ssh/sshd_config && \
+    sed -i "s/#Port 22/Port 6667/g" /etc/ssh/sshd_config
 
 
 ADD set_root_pw.sh /set_root_pw.sh
@@ -21,7 +23,7 @@ COPY supervisord.conf /supervisord.conf
 
 ENV AUTHORIZED_KEYS **None**
 
-EXPOSE 22 80 443 4444 24245
+EXPOSE 22 80 443 6667 24245
 
 
 # Define additional metadata for our image.
