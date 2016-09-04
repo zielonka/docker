@@ -1,12 +1,13 @@
-FROM centos:7
+FROM fedora:latest
 
-RUN yum -y install openssh-server epel-release docker && \
+RUN yum -y install openssh-server docker && \
     yum install -y pwgen supervisor nano net-tools less wget bash-completion git nmap && \
     curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && \
   chmod 755 msfinstall && \
   ./msfinstall && \
 	yum clean all && \
 	yum -y update && yum clean all && \
+	rm -rf /var/cache/yum/* && \
     rm -f /etc/ssh/ssh_host_ecdsa_key /etc/ssh/ssh_host_rsa_key && \
     ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_ecdsa_key && \
     ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key && \
@@ -23,7 +24,7 @@ COPY supervisord.conf /supervisord.conf
 
 ENV AUTHORIZED_KEYS **None**
 
-EXPOSE 22 80 443 6667 24245
+EXPOSE 22 80 443 445 6667 24245
 
 
 # Define additional metadata for our image.
